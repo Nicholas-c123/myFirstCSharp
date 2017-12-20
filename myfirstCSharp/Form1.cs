@@ -10,16 +10,10 @@ namespace myfirstCSharp
         List<int> girl = new List<int>();
         Dictionary<int, string> vip = new Dictionary<int, string>();
         System.Media.SoundPlayer sp;
+        
         public Form1()
         {
-            InitializeComponent();
-            boy.AddRange(new int[] { 1, 8, 10, 12, 13, 14, 16, 18, 19, 20, 25, 39, 45, 46, 47, 48, 49, 51, 54, 55, 56, 57, 58, 61, 62, 63, 64, 65, 68, 70, 75, 78, 80 });
-            girl.AddRange(new int[] { 2, 3, 4, 5, 6, 7, 9, 11, 15, 17, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43, 44, 50, 52, 53, 59, 60, 66, 67, 69, 71, 72, 73, 74, 76, 77, 79, 81, 82 });
-            vip.Add(13, "不说了，为涛哥奉上特殊BGM");
-            vip.Add(8, "小秦同学今天盘亏手机一部，请大家关照一下");
-            vip.Add(10,"感谢下伦带逛，带同学们一直high");
-            vip.Add(12, "本码农也出来露个面");
-
+            InitializeComponent();            
         }
         private void delete()
         {
@@ -45,40 +39,55 @@ namespace myfirstCSharp
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if (girl.Count <= 0)
+            if (remaining.Text == "")
             {
-                MessageBox.Show("匹配全部完成,大会结束");
-            }
-            else
+                remaining.Text = "剩余人数:" + total.Text;
+                total.Enabled = false;
+                int half = int.Parse(total.Text) / 2;
+                for (int i = 0; i < half; i++)
+                {
+                    girl.Add(i + 1);
+                    boy.Add(half + i + 1);
+                }
+                btnStart.PerformClick();
+            }else
             {
-                if (timer2.Enabled)
+                if (girl.Count <= 0)
                 {
-                    btnReroll.PerformClick();
-                }else
+                    MessageBox.Show("匹配全部完成,大会结束");
+                }
+                else
                 {
-                    if (timer1.Enabled)
+                    if (timer2.Enabled)
                     {
-                        timer1.Stop();
-                        //MessageBox.Show( boy.Count + "  " + girl.Count);
-                        if (vip.ContainsKey(int.Parse(p1.Text)))
-                        {
-                            changeBgm(Properties.Resources.bgm);
-                            info.Text = vip[int.Parse(p1.Text)];
-                            //btnReroll.Visible = true;
-                        }
-                        else
-                            changeBgm(Properties.Resources.bgmWaiting);
-                        delete();
+                        btnReroll.PerformClick();
                     }
                     else
                     {
-                        info.Text = "";
-                        changeBgm(Properties.Resources.bgmRolling);
-                        btnReroll.Visible = false;
-                        timer1.Start();
+                        if (timer1.Enabled)
+                        {
+                            timer1.Stop();
+                            if (vip.ContainsKey(int.Parse(p1.Text)))
+                            {
+                                changeBgm(Properties.Resources.bgm);
+                                info.Text = vip[int.Parse(p1.Text)];
+                                //btnReroll.Visible = true;
+                            }
+                            else
+                                changeBgm(Properties.Resources.bgmWaiting);
+                            delete();
+                        }
+                        else
+                        {
+                            info.Text = "";
+                            changeBgm(Properties.Resources.bgmRolling);
+                            btnReroll.Visible = false;
+                            timer1.Start();
+                        }
                     }
                 }
             }
+            
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -121,7 +130,6 @@ namespace myfirstCSharp
                 girl.Add(int.Parse(p2.Text));
                 timer2.Start();
             }
-                
         }
 
         private void timer2_Tick(object sender, EventArgs e)
@@ -131,11 +139,14 @@ namespace myfirstCSharp
             p2.Text = girl[index].ToString();
         }
 
-        private void Form1_ResizeEnd(object sender, EventArgs e)
+        private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            panel1.Left = (ActiveForm.Width - panel1.Width) / 2;
-            panel1.Top = (ActiveForm.Height - panel1.Height) / 2;
-            panel1.Refresh();
+            panel1.Location  = new System .Drawing.Point((this.Width - panel1.Width) / 2,(this.Height - panel1.Height) / 2);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
